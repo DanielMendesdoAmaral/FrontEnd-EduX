@@ -25,7 +25,7 @@ const Login = () => {
             }
         })
         .then(response => {
-            if(response.ok)
+            if(response.ok) 
                 return response.json();
             alert("Email ou senha inválida.");
         })
@@ -45,11 +45,10 @@ const Login = () => {
     }
 
     return (
-        <div style={{background: "#fff"}}>
-            <Container>
+        <Container>
             <Row className="justify-content-md-center" style={{display: "flex", alignItems: "center", height: "100vh"}}>
                 <Col md="auto">
-                    <Card style={{background: "#fff", borderTop: "solid 1.5px #00d65f", borderRight: "solid 1.5px #ff271c", borderBottom: "solid 1.5px #f9e800", borderLeft: "solid 1.5px #00c2ee"}}>
+                    <Card style={{borderTop: "solid 1.5px #00d65f", borderRight: "solid 1.5px #ff271c", borderBottom: "solid 1.5px #f9e800", borderLeft: "solid 1.5px #00c2ee"}}>
                         <Card.Body>
                             <Navbar.Brand href="/login">
                                 <img
@@ -63,7 +62,7 @@ const Login = () => {
                             <Card.Title style={{textAlign: "center", padding: "10px"}}>Faça login</Card.Title>
                             <Form onSubmit={event => logar(event)}>
                                 <Form.Group>
-                                    <Form.Control type="email" placeholder="Email" value={email} onChange={event=> setEmail(event.target.value)} />
+                                    <Form.Control type="email" placeholder="Email" value={email} onChange={event => setEmail(event.target.value)} />
                                     <Form.Control type="password" placeholder="Senha" value={senha} onChange={event => setSenha(event.target.value)} />
                                 </Form.Group>
                                 <Button variant="primary" type="submit" style={{margin: "auto", display:"block", width: "100%"}}>Entrar</Button>
@@ -72,12 +71,7 @@ const Login = () => {
                     </Card>
                 </Col>
             </Row>
-            
-            
         </Container>
-        </div>
-        
-        
     )
 }
 

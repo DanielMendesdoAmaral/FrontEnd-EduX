@@ -8,9 +8,12 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 //Páginas
 import Login from "./pages/login/login";
+import Cadastro from "./pages/cadastro/cadastro";
+import Menu from "./components/menu/menu";
+import Home from "./pages/home/home";
 
 ReactDOM.render(
-  <Login/>,
+  <Home/>,
   document.getElementById('root')
 );
 
