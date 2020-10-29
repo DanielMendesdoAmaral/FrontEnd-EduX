@@ -1,9 +1,8 @@
 import React, {useState} from "react";
-import {Form, Button, Container, Row, Col, Card, Navbar} from "react-bootstrap";
+import {Form, Button, Container, Row, Col, Card, Navbar, Nav} from "react-bootstrap";
 import logo from "../../images/logo.png";
-import {url} from "../../components/constants/constants";
+import {url} from "../../utils/constants";
 import {useHistory} from "react-router-dom";
-import jwt_decode from "jwt-decode";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -28,19 +27,15 @@ const Login = () => {
             if(response.ok) 
                 return response.json();
             alert("Email ou senha inválida.");
+            history.push("/cadastrar");
         })
         .then(data => {
             localStorage.setItem("token-edux", data.token);
 
-            let decoded = jwt_decode(data.token);
-
-            if(decoded==="Aluno")
-                history.push("/aluno");
-            else if (decoded==="Professor")
-                history.push("/professor");
+            history.push("/");
         })
         .catch(err => {
-            alert(err + ". Envie um email para edux.suport@email.com.");
+            console.log(err);
         });
     }
 
@@ -50,7 +45,7 @@ const Login = () => {
                 <Col md="auto">
                     <Card style={{borderTop: "solid 1.5px #00d65f", borderRight: "solid 1.5px #ff271c", borderBottom: "solid 1.5px #f9e800", borderLeft: "solid 1.5px #00c2ee"}}>
                         <Card.Body>
-                            <Navbar.Brand href="/login">
+                            <Navbar.Brand href="/">
                                 <img
                                     src={logo}
                                     width="50%"
@@ -59,7 +54,7 @@ const Login = () => {
                                     style={{margin: "auto", display: "block"}}
                                 />
                             </Navbar.Brand>
-                            <Card.Title style={{textAlign: "center", padding: "10px"}}>Faça login</Card.Title>
+                            <Card.Title style={{textAlign: "center", padding: "10px"}}>Login</Card.Title>
                             <Form onSubmit={event => logar(event)}>
                                 <Form.Group>
                                     <Form.Control type="email" placeholder="Email" value={email} onChange={event => setEmail(event.target.value)} />
@@ -67,8 +62,10 @@ const Login = () => {
                                 </Form.Group>
                                 <Button variant="primary" type="submit" style={{margin: "auto", display:"block", width: "100%"}}>Entrar</Button>
                             </Form>
+                            <Nav.Link style={{padding: "10px 0"}}>Esqueci minha senha</Nav.Link>
                         </Card.Body>
                     </Card>
+                    <p style={{display: "flex", justifyContent: "center", paddingTop: "10px"}}>Não é cadastrado? <Nav.Link href="/cadastrar" style={{padding: "0 4px"}}>Cadastre-se!</Nav.Link></p>
                 </Col>
             </Row>
         </Container>
