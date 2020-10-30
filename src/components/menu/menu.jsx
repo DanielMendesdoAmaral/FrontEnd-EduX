@@ -1,8 +1,20 @@
 import React from "react";
-import { Navbar, Nav, Container, Col, Row } from "react-bootstrap";
+import { Navbar, Nav, Col, Row, Dropdown } from "react-bootstrap";
 import logo from "../../images/logo.png";
+import jwt_decode from "jwt-decode";
+import {useHistory} from "react-router-dom";
 
 const Menu = () => {
+    const history = useHistory();
+
+    const sair = (event) => {
+        event.preventDefault();
+
+        localStorage.removeItem("token-edux");
+
+        history.push("/");
+    }
+
     const renderizarAbas = () => {
         const token = localStorage.getItem("token-edux");
 
@@ -19,17 +31,47 @@ const Menu = () => {
                 </Navbar.Collapse>
             )
         }
+        else if(jwt_decode(token).role==="Instituição") {
+            return (
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="mr-auto">
+                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                        <Nav.Link href="/crudprofessores">Cadastrar professores</Nav.Link>
+                        <Nav.Link href="/crudcursos">Cadastrar cursos</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <Dropdown>
+                            <Dropdown.Toggle style={{borderRadius: "1000px", padding: "2px 5px"}} variant="primary" id="dropdown-basic">
+                                {jwt_decode(token).nameid.split(" ")[0]}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={event => sair(event)}>Sair</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Nav>
+                </Navbar.Collapse>
+            )
+        }
         else {
             return (
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="/">Início</Nav.Link>
-                        <Nav.Link href="/dicas">Dicas</Nav.Link>
+                        <Nav.Link href="/timeline">Dicas</Nav.Link>
                         <Nav.Link href="/turmas">Turmas</Nav.Link>
                         <Nav.Link href="/objetivos">Objetivos</Nav.Link>
                     </Nav>
                     <Nav>
-                        <Nav.Link href="/dicas">Sair</Nav.Link>
+                        <Dropdown>
+                            <Dropdown.Toggle style={{borderRadius: "1000px", padding: "2px 5px"}} variant="primary" id="dropdown-basic">
+                                {jwt_decode(token).nameid.split(" ")[0]}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={event => sair(event)}>Sair</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </Nav>
                 </Navbar.Collapse>
             )

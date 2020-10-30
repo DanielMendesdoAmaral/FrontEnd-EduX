@@ -1,0 +1,35 @@
+#txta {
+    resize: none;
+    margin-bottom: 1rem;
+    color: #1da1f2;
+    border: 1px solid #00c2ee;
+    border-radius: 10px;
+  }
+
+.tweetForm{
+    display: flex;
+    justify-content: center;
+}
+
+#btn{
+      background: white;
+      border: 1px solid #00c2ee;
+      border-radius: 15px;
+      width: 65px;
+      height: 75px;
+      color: #1da1f2;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+}
+
+#btn:hover {
+        background: #1da1f2;
+        color: white;
+      }
+
+.tweetForm{
+
+      margin-top: 50px;  
+
+}

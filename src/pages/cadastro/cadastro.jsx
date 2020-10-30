@@ -42,6 +42,7 @@ const Cadastro = () => {
         })
         .then(data => {
             localStorage.setItem("token-edux", data.token);
+            history.push("/")
         })
         .catch(err => {
             console.log(err);
@@ -51,36 +52,28 @@ const Cadastro = () => {
     const cadastrar = (event) => {
         event.preventDefault();
 
-        logar();
+        let id = perfis.filter(perfil => perfil.permissao=="Aluno").map(perfil => perfil.id).toString();
 
-        if(localStorage.getItem("token-edux")!==null) {
-            var id = perfis.filter(perfil => perfil.permissao=="Aluno").map(perfil => perfil.id).toString();
-
-            let usuario = {
-                nome: nome,
-                email: email,
-                senha: senha,
-                idPerfil: id,
-                dataUltimoAcesso: null
-            }
-
-            fetch(`${url}/usuario`, {
-                method: "POST",
-                body: JSON.stringify(usuario),
-                headers: {
-                    "content-type": "application/json"
-                } 
-            })
-            .then(response => {
-                response.json();
-                logar();
-                history.push("/");
-            })
-            .catch(err => console.log(err));
+        let usuario = {
+            nome: nome,
+            email: email,
+            senha: senha,
+            idPerfil: id,
+            dataUltimoAcesso: null
         }
-        else {
-            history.push("/login");
-        }
+
+        fetch(`${url}/usuario`, {
+            method: "POST",
+            body: JSON.stringify(usuario),
+            headers: {
+                "content-type": "application/json"
+            } 
+        })
+        .then(response => {
+            response.json();
+            logar();
+        })
+        .catch(err => console.log(err));
     }
 
     return (

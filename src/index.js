@@ -19,14 +19,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Login from "./pages/login/login";
 import Cadastro from "./pages/cadastro/cadastro";
 import Inicio from "./pages/inicio/inicio";
-import NaoEncontrada from "./pages/404/404"
+import CrudProfessores from "./pages/crudprofessores/crudprofessores";
+import NaoEncontrada from "./pages/404/404";
+import TimeLine from "./pages/timeline/timeline"
 
 const RotaPrivada = ({component : Component, ...rest}) => (
   <Route
     {...rest} 
     render= {
       props => 
-      localStorage.getItem("edux-nyous") === null ?
+      localStorage.getItem("token-edux") === null ?
         <Redirect to={{pathname: "/login", state: {from: props.location}}}/> :
         <Component {...props}/>
     }
@@ -38,7 +40,7 @@ const RotaPrivadaProfessor = ({component : Component, ...rest}) => (
     {...rest}
     render= {
       props => 
-      localStorage.getItem("edux-nyous") !== null && jwt_decode(localStorage.getItem("token-nyous")).role === "Professor" ?
+      localStorage.getItem("token-edux") !== null && jwt_decode(localStorage.getItem("token-edux")).role === "Professor" ?
         <Component {...props}/> :
         <Redirect to={{pathname: "/login", state: {from: props.location}}}/>
     }
@@ -50,7 +52,7 @@ const RotaPrivadaInstituicao = ({component : Component, ...rest}) => (
     {...rest}
     render= {
       props => 
-      localStorage.getItem("edux-nyous") !== null && jwt_decode(localStorage.getItem("token-nyous")).role === "Instituição" ?
+      localStorage.getItem("token-edux") !== null && jwt_decode(localStorage.getItem("token-edux")).role === "Instituição" ?
         <Component {...props}/> :
         <Redirect to={{pathname: "/login", state: {from: props.location}}}/>
     }
@@ -62,7 +64,9 @@ const routing = (
     <Switch>
       <Route exact path="/" component={Inicio}/> 
       <Route path="/login" component={Login}/>
-      <Route path="/cadastrar" component={Cadastro}/>
+      <Route path="/cadastrar" component={Cadastro}/> 
+      <RotaPrivada path="/timeline" component={TimeLine}/>
+      <RotaPrivadaInstituicao path="/crudprofessores" component={CrudProfessores}/>
       <Route component={NaoEncontrada}/>
     </Switch>
   </Router>
