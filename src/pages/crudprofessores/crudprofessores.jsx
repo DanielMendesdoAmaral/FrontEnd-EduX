@@ -11,22 +11,18 @@ const CrudProfessores = () => {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [usuarios, setUsuarios] = useState([]);
-    const [perfis, setPerfis] = useState([]);
 
-    const pegarPerfis = () => {
-        fetch(`${url}/perfil`)
-        .then(response => response.json())
-        .then(dados => {
-            setPerfis(dados);
-        })
-        .catch(err => console.log(err));
-    }
+    useEffect(() => {
+        listar();
+    }, []);
+
+    let idPerfilProfessor = "8853b7d3-eba9-4ac4-901b-72198ad559ac";
 
     const listar = () => {
         fetch(url+"/usuario")
         .then(response => response.json())
         .then(dados => {
-            setUsuarios(dados.filter(dado => dado.idPerfil===idPerfil));
+            setUsuarios(dados.filter(dado => dado.idPerfil===idPerfilProfessor));
             limparCampos();
         })
         .catch(err => console.log(err));
@@ -42,13 +38,13 @@ const CrudProfessores = () => {
     const editar = (event) => {
         event.preventDefault();
 
-        fetch(url + "/usuario/buscar/id" + event.target.value)
+        fetch(url + "/usuario/buscar/id/" + event.target.value)
         .then(response => response.json())
         .then(dados => {
-            setId(dados.data.id);
-            setNome(dados.data.nome);
-            setEmail(dados.data.email);
-            setSenha(dados.data.senha);
+            setId(dados.id);
+            setNome(dados.nome);
+            setEmail(dados.email);
+            setSenha(dados.senha);
         })
         .catch(err => console.log(err));
     }
@@ -69,18 +65,15 @@ const CrudProfessores = () => {
         .catch(err => console.log(err));
     }
 
-    let idPerfil = perfis.filter(perfil => perfil.permissao=="Professor").map(perfil => perfil.id).toString();
-
     const cadastrar = (event) => {
         event.preventDefault();
-        console.log(id)
 
         let usuario = {
             id: id,
             nome: nome,
             email: email,
             senha: senha,
-            idPerfil: idPerfil,
+            idPerfil: idPerfilProfessor,
             dataUltimoAcesso: null
         }
 
@@ -102,20 +95,15 @@ const CrudProfessores = () => {
         .catch(err => console.log(err));
     }
 
-    useEffect(() => {
-        pegarPerfis();
-    }, []);
-
     return (
         <div>
             <Menu/>
             <Titulo titulo="Gerencie os professores da plataforma" chamada="Cadastre, edite, delete e visalize todos os professores cadastrados na plataforma."/>
-            <Container onLoad={listar()}>
+            <Container>
                 <Row className="justify-content-md-center" style={{display: "flex", alignItems: "center"}}>
                     <Col md="auto">
-                        <Card style={{borderTop: "solid 1.5px #00d65f", borderRight: "solid 1.5px #ff271c", borderBottom: "solid 1.5px #f9e800", borderLeft: "solid 1.5px #00c2ee"}}>
+                        <Card style={{borderTop: "solid 1.5px #00d65f", borderRight: "solid 1.5px #ff271c", borderBottom: "solid 1.5px #f9e800", borderLeft: "solid 1.5px #00c2ee", margin: "50px 0"}}>
                             <Card.Body>
-                                <Card.Title style={{textAlign: "center", padding: "10px"}}>Cadastro</Card.Title>
                                 <Form onSubmit={event => cadastrar(event)}>
                                     <Form.Group>
                                         <Form.Control type="text" placeholder="Nome" value={nome} onChange={event => setNome(event.target.value)} />
@@ -128,23 +116,33 @@ const CrudProfessores = () => {
                         </Card>
                     </Col>
                 </Row>
-                <Table striped style={{display: "flex", color: "black", justifyContent: "space-around", margin: "100px 0"}}>
-                    <tbody>
-                        {
-                            usuarios.map((item, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td style={{height: "40px", width: "40px", borderRadius: "100px", display: "flex", justifyContent: "center", alignItems: "center", background: "#0069D9"}}>{item.nome.substring(0,1).toUpperCase()}</td>
-                                        <td>{item.email}</td>
-                                        <td>{item.senha}</td>
-                                        <td><Button variant="primary" type="button" value={item.id} onClick={event => editar(event)}>Editar</Button><Button variant="danger" type="button" value={item.id} onClick={event => remover(event)} style={{marginLeft: "15px"}}>Remover</Button></td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </Table>
             </Container>
+            <Table striped style={{color: "black", marginBottom: "50px 0", width: "95vw", margin: "auto"}}>
+                <thead>
+                    <tr>
+                        <td>AVATAR</td>
+                        <td>NOME</td>
+                        <td>EMAIL</td>
+                        <td>SENHA SHA256</td>
+                        <td>AÇÕES</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        usuarios.map((item, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td><div style={{height: "40px", width: "40px", borderRadius: "100px", display: "flex", justifyContent: "center", alignItems: "center", background: "#0069D9", color: "white"}}>{item.nome.substring(0,1).toUpperCase()}</div></td>
+                                    <td>{item.nome}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.senha}</td>
+                                    <td><Button variant="primary" type="button" value={item.id} onClick={event => editar(event)}>Editar</Button><Button variant="danger" type="button" value={item.id} onClick={event => remover(event)} style={{marginLeft: "1px"}}>Remover</Button></td>
+                                </tr>
+                            )
+                        })
+                    }
+                </tbody>
+            </Table>
             <Rodape/>
         </div>
     )

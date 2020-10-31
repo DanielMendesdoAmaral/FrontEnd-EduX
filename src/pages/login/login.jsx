@@ -31,7 +31,6 @@ const Login = () => {
         })
         .then(data => {
             localStorage.setItem("token-edux", data.token);
-
             history.push("/");
         })
         .catch(err => {
