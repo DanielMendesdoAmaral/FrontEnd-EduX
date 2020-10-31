@@ -21,7 +21,8 @@ import Cadastro from "./pages/cadastro/cadastro";
 import Inicio from "./pages/inicio/inicio";
 import CrudProfessores from "./pages/crudprofessores/crudprofessores";
 import NaoEncontrada from "./pages/404/404";
-import TimeLine from "./pages/timeline/timeline"
+import TimeLine from "./pages/timeline/timeline";
+import Turmas from "./pages/turmas/turmas";
 
 const RotaPrivada = ({component : Component, ...rest}) => (
   <Route
@@ -31,18 +32,6 @@ const RotaPrivada = ({component : Component, ...rest}) => (
       localStorage.getItem("token-edux") === null ?
         <Redirect to={{pathname: "/login", state: {from: props.location}}}/> :
         <Component {...props}/>
-    }
-  />
-);
-
-const RotaPrivadaProfessor = ({component : Component, ...rest}) => (
-  <Route
-    {...rest}
-    render= {
-      props => 
-      localStorage.getItem("token-edux") !== null && jwt_decode(localStorage.getItem("token-edux")).role === "Professor" ?
-        <Component {...props}/> :
-        <Redirect to={{pathname: "/login", state: {from: props.location}}}/>
     }
   />
 );
@@ -66,6 +55,7 @@ const routing = (
       <Route path="/login" component={Login}/>
       <Route path="/cadastrar" component={Cadastro}/> 
       <RotaPrivada path="/timeline" component={TimeLine}/>
+      <RotaPrivada path="/turmas" component={Turmas}/>
       <RotaPrivadaInstituicao path="/crudprofessores" component={CrudProfessores}/>
       <Route component={NaoEncontrada}/>
     </Switch>

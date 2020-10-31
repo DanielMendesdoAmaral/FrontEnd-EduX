@@ -3,6 +3,7 @@ import {Form, Button, Container, Row, Col, Card, Navbar, Nav} from "react-bootst
 import logo from "../../images/logo.png";
 import {url} from "../../utils/constants";
 import {useHistory} from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -31,7 +32,11 @@ const Login = () => {
         })
         .then(data => {
             localStorage.setItem("token-edux", data.token);
-            history.push("/");
+            const token = localStorage.getItem("token-edux");
+            if(jwt_decode(token).role!=="Instituição")
+                history.push("/");
+            else
+                history.push("/dashboard");
         })
         .catch(err => {
             console.log(err);
