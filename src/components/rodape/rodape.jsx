@@ -18,7 +18,7 @@ const Rodape = () => {
                 <br></br>
                 <small>Copyright © 2020 EduX. Todos os direitos reservados</small>
             </footer>
-    </div> 
+        </div> 
     )
 }
 export default Rodape;

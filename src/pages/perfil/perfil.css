@@ -13,6 +13,10 @@
     justify-content: start;
 }
 
+.imgPerfil{
+    width: 100%;
+}
+
 .col-md-4{
     width: 100%;
     text-align: center;
@@ -20,4 +24,22 @@
 
 .container2{
     margin-top: 20px;
+}
+
+.tabela{
+    margin-top: 20px;
+    width: 100%;
+    background-color: cadetblue;
+    display: flex;
+}
+
+.tabela p{
+    font-size: 20px;
+}
+
+.p2{
+    margin-left: 50px;
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
 }

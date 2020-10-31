@@ -81,10 +81,12 @@ const Turmas = () => {
         fetch(`${url}/usuario/buscar/id/${idAluno}`)
         .then(response => response.json())
         .then(aluno => {
-            console.log(alunosEscolhidos)
-            console.log(aluno)
-            let indice = alunosEscolhidos.indexOf(aluno);
-            console.log(indice)
+            let indice;
+            alunosEscolhidos.forEach(alunoEscolhido => {
+                if(aluno.email === alunoEscolhido.email) 
+                    indice = alunosEscolhidos.indexOf(alunoEscolhido);
+            })
+            alunosEscolhidos.splice(indice,1);
         });
     }
 
