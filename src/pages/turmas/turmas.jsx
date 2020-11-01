@@ -54,8 +54,27 @@ const Turmas = () => {
         fetch(`${url}/turma`)
         .then(response => response.json())
         .then(dados => {
-            setTurmas(dados.data);
+            setTurmas(dados);
             limparCampos();
+        })
+        .catch(err => console.log(err));
+    }
+
+    const editar = (event) => {
+        event.preventDefault();
+
+        fetch(url + "/turma/buscar/id/" + event.target.value)
+        .then(response => response.json())
+        .then(dados => {
+            setId(dados.id);
+            setDescricao(dados.descricao);
+            setIdCurso(dados.idCurso);
+            dados.alunosTurmas.forEach(alunoTurma => {
+                escolherAluno(alunoTurma.idUsuario);
+            });
+            dados.professoresTurmas.forEach(professorTurma => {
+                escolherProfessor(professorTurma.idUsuario);
+            });
         })
         .catch(err => console.log(err));
     }
@@ -90,6 +109,8 @@ const Turmas = () => {
             turma: turma
         }
 
+        console.log(JSON.stringify(professoresAlunosTurma))
+
         let metodo = (id === "" ? "POST" : "PUT");
         let urlPostOuPut = (id === "" ? `${url}/turma` : `${url}/turma/${id}`);
         
@@ -102,7 +123,6 @@ const Turmas = () => {
             } 
         })
         .then(response => listar())
-        .then(dados => listar())
         .catch(err => console.log(err));
     }
 
@@ -194,11 +214,10 @@ const Turmas = () => {
         fetch(url + "/turma/" + event.target.value, { 
             method: "DELETE",
             headers: {
-                'Content-Type': 'application/json',
+                'content-type': 'application/json',
                 "authorization": "Bearer " + token
             }
         })
-        .then(response => listar())
         .then(response => listar())
         .catch(err => console.log(err));
     }
@@ -228,7 +247,7 @@ const Turmas = () => {
                                                 </Card.Text>
                                                 <div style={{display: "flex", justifyContent: "space-around"}}>
                                                     <Button variant="link">Ver +</Button>
-                                                    <Button>Editar</Button>
+                                                    <Button onClick={event=>editar(event)} value={turma.id}>Editar</Button>
                                                     <Button variant="danger" onClick={event=>remover(event)} value={turma.id}>Deletar</Button>
                                                 </div>
                                             </Card.Body>
