@@ -4,7 +4,7 @@ import Menu from "../../components/menu/menu";
 import Titulo from "../../components/titulo/index";
 import jwt_decode from "jwt-decode";
 import {url} from "../../utils/constants";
-import {Card, Accordion, Button, Form, Row, Col} from "react-bootstrap";
+import {Card, Accordion, Button, Form, Row, Col, Container} from "react-bootstrap";
 
 const Turmas = () => {
     const token = localStorage.getItem("token-edux");
@@ -51,11 +51,10 @@ const Turmas = () => {
     }
 
     const listar = () => {
-        fetch(url+"/turma")
+        fetch(`${url}/turma`)
         .then(response => response.json())
         .then(dados => {
-            setTurmas(dados);
-            console.log(turmas)
+            setTurmas(dados.data);
             limparCampos();
         })
         .catch(err => console.log(err));
@@ -64,30 +63,46 @@ const Turmas = () => {
     const cadastrar = (event) => {
         event.preventDefault();
 
+        let professoresTurma = [];
+
+        for(let c=0; c<professoresEscolhidos.length;c++) {
+            professoresTurma[c] = new Object();
+            professoresTurma[c].descricao = "Professor";
+            professoresTurma[c].idUsuario = professoresEscolhidos[c].id;
+        }
+
+        let alunosTurma = [];
+
+        for(let c=0; c<alunosEscolhidos.length;c++) {
+            alunosTurma[c] = new Object();
+            alunosTurma[c].matricula = "";
+            alunosTurma[c].idUsuario = alunosEscolhidos[c].id;
+        }
+
+        let turma = {
+            descricao: descricao,
+            idCurso: idCurso
+        }
+
         let professoresAlunosTurma = {
-            professores: professoresEscolhidos,
-            alunos: alunosEscolhidos,
-            turma: {
-                descricao: descricao,
-                idCurso: idCurso
-            }
+            professores: professoresTurma,
+            alunos: alunosTurma,
+            turma: turma
         }
 
         let metodo = (id === "" ? "POST" : "PUT");
         let urlPostOuPut = (id === "" ? `${url}/turma` : `${url}/turma/${id}`);
-    
+        
         fetch(urlPostOuPut, {
             method: metodo,
             body: JSON.stringify(professoresAlunosTurma),
             headers: {
                 "content-type": "application/json",
-                "authorization": "Bearer " + token
+                "authorization": "Bearer " + token 
             } 
         })
-        .then(response => response.json())
-        .then(response => {
-            listar();
-        })
+        .then(response => listar())
+        .then(dados => listar())
         .catch(err => console.log(err));
     }
 
@@ -173,29 +188,85 @@ const Turmas = () => {
         });
     }
 
+    const remover = (event) => {
+        event.preventDefault();
+
+        fetch(url + "/turma/" + event.target.value, { 
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                "authorization": "Bearer " + token
+            }
+        })
+        .then(response => listar())
+        .then(response => listar())
+        .catch(err => console.log(err));
+    }
+
     const renderizarTurmas = () => {
+        if(turmas.length<1) {
+            return (
+                <Container style={{margin: "50px", textAlign: "center"}}>
+                    <p>Desculpe! No momento você não está participando de nenhuma turma!</p>
+                </Container>
+            )
+        }
         if(role==="Professor") {
             return (
-                <Card>
-                    <Card.Body>
+                <Container>
+                    <Row style={{marginTop: "50px"}}>
                         {
                             turmas.map((turma, index) => {
                                 return (
-                                    <div>
-                                        <Card.Title>{turma.descricao}</Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-                                        <Card.Text>
-                                            Some quick example text to build on the card title and make up the bulk of
-                                            the card's content.
-                                        </Card.Text>
-                                        <Card.Link href="#">Card Link</Card.Link>
-                                        <Card.Link href="#">Another Link</Card.Link>
-                                    </div>
+                                    <Col key={index} xs={4}>
+                                        <Card style={{margin: "25px"}}>
+                                            <Card.Body>
+                                                <Card.Title>{turma.descricao}</Card.Title>
+                                                <Card.Subtitle className="mb-2 text-muted">{turma.curso.titulo}</Card.Subtitle>
+                                                <Card.Text>
+                                                    Esta turma tem {turma.professoresTurmas.length} professores e {turma.alunosTurmas.length} alunos.
+                                                </Card.Text>
+                                                <div style={{display: "flex", justifyContent: "space-around"}}>
+                                                    <Button variant="link">Ver +</Button>
+                                                    <Button>Editar</Button>
+                                                    <Button variant="danger" onClick={event=>remover(event)} value={turma.id}>Deletar</Button>
+                                                </div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
                                 )
                             })
                         }
-                    </Card.Body>
-                </Card>
+                    </Row>
+                </Container>
+            )
+        }
+        else {
+            return (
+                <Container>
+                    <Row style={{marginTop: "50px"}}>
+                        {
+                            turmas.map((turma, index) => {
+                                return (
+                                    <Col key={index} xs={4}>
+                                        <Card style={{margin: "25px"}}>
+                                            <Card.Body>
+                                                <Card.Title>{turma.descricao}</Card.Title>
+                                                <Card.Subtitle className="mb-2 text-muted">{turma.curso.titulo}</Card.Subtitle>
+                                                <Card.Text>
+                                                    Esta turma tem {turma.professoresTurmas.length} professores e {turma.alunosTurmas.length} alunos.
+                                                </Card.Text>
+                                                <div style={{display: "flex", justifyContent: "space-around"}}>
+                                                    <Button variant="link">Ver +</Button>
+                                                </div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                )
+                            })
+                        }
+                    </Row>
+                </Container>
             )
         }
     }
@@ -215,7 +286,7 @@ const Turmas = () => {
                                         <h2 style={{lineHeight: "300%", textAlign: "center"}}>Configurações gerais da turma</h2>
                                         <Form.Control as="textarea" rows={3} placeholder="Descrição" value={descricao} onChange={event=>setDescricao(event.target.value)}/>
                                         <Form.Control as="select" value={idCurso} onChange={event => setIdCurso(event.target.value)}>
-                                            <option value={0}>Curso</option>
+                                            <option value={0} selected>Curso</option>
                                             {
                                                 cursos.map((curso, index) => {
                                                     return (
@@ -229,7 +300,7 @@ const Turmas = () => {
                                         <h2 style={{lineHeight: "300%", textAlign: "center"}}>Escolha os integrantes da turma</h2>
                                         <Form.Label style={{fontWeight: "bolder"}}>Os alunos:</Form.Label>
                                         <Form.Control as="select" onChange={event => escolherAluno(event.target.value)} style={{marginBottom: "20px"}}>
-                                            <option>Alunos</option>
+                                            <option selected>Alunos</option>
                                             {
                                                 alunos.map((aluno, index) => {
                                                     return (
@@ -243,7 +314,7 @@ const Turmas = () => {
                                                 {
                                                     alunosEscolhidos.map((aluno, index) => {
                                                         return (
-                                                            <Col xs="2">
+                                                            <Col xs="2" key={index}>
                                                                 <Button onClick={event=>removerAlunoEscolhido(event.target.value)} style={{margin: "20px"}} key={index} value={aluno.id}>X {aluno.nome}</Button>
                                                             </Col>
                                                         )
@@ -255,7 +326,7 @@ const Turmas = () => {
                                     <Form.Group>
                                         <Form.Label style={{fontWeight: "bolder"}}>Os professores:</Form.Label>
                                         <Form.Control as="select" onChange={event => escolherProfessor(event.target.value)} style={{marginBottom: "20px"}}>
-                                            <option>Professores</option>
+                                            <option selected>Professores</option>
                                             {
                                                 professores.map((professor, index) => {
                                                     return (
@@ -269,7 +340,7 @@ const Turmas = () => {
                                                 {
                                                     professoresEscolhidos.map((professor, index) => {
                                                         return (
-                                                            <Col xs="2">
+                                                            <Col xs="2" key={index}>
                                                                 <Button onClick={event=>removerProfessorEscolhido(event.target.value)} style={{margin: "20px"}} key={index} value={professor.id}>X {professor.nome}</Button>
                                                             </Col>
                                                         )
