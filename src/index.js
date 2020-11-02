@@ -23,6 +23,7 @@ import CrudProfessores from "./pages/crudprofessores/crudprofessores";
 import NaoEncontrada from "./pages/404/404";
 import TimeLine from "./pages/timeline/timeline";
 import Turmas from "./pages/turmas/turmas";
+import DetalhesTurma from "./pages/DetalhesTurma/detalhesturma";
 
 const RotaPrivada = ({component : Component, ...rest}) => (
   <Route
@@ -56,6 +57,7 @@ const routing = (
       <Route path="/cadastrar" component={Cadastro}/> 
       <RotaPrivada path="/timeline" component={TimeLine}/>
       <RotaPrivada path="/turmas" component={Turmas}/>
+      <RotaPrivada path="/turma/detalhes/:turmaId" component={DetalhesTurma} />
       <RotaPrivadaInstituicao path="/crudprofessores" component={CrudProfessores}/>
       <Route component={NaoEncontrada}/>
     </Switch>

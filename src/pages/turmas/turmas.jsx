@@ -5,6 +5,7 @@ import Titulo from "../../components/titulo/index";
 import jwt_decode from "jwt-decode";
 import {url} from "../../utils/constants";
 import {Card, Accordion, Button, Form, Row, Col, Container} from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 const Turmas = () => {
     const token = localStorage.getItem("token-edux");
@@ -109,8 +110,6 @@ const Turmas = () => {
             turma: turma
         }
 
-        console.log(JSON.stringify(professoresAlunosTurma))
-
         let metodo = (id === "" ? "POST" : "PUT");
         let urlPostOuPut = (id === "" ? `${url}/turma` : `${url}/turma/${id}`);
         
@@ -122,7 +121,9 @@ const Turmas = () => {
                 "authorization": "Bearer " + token 
             } 
         })
-        .then(response => listar())
+        .then(response => {
+            listar()
+        })
         .catch(err => console.log(err));
     }
 
@@ -246,7 +247,7 @@ const Turmas = () => {
                                                     Esta turma tem {turma.professoresTurmas.length} professores e {turma.alunosTurmas.length} alunos.
                                                 </Card.Text>
                                                 <div style={{display: "flex", justifyContent: "space-around"}}>
-                                                    <Button variant="link">Ver +</Button>
+                                                    <Button variant="link" href={`/turma/detalhes/${turma.id}`}>Ver +</Button>
                                                     <Button onClick={event=>editar(event)} value={turma.id}>Editar</Button>
                                                     <Button variant="danger" onClick={event=>remover(event)} value={turma.id}>Deletar</Button>
                                                 </div>
@@ -276,7 +277,7 @@ const Turmas = () => {
                                                     Esta turma tem {turma.professoresTurmas.length} professores e {turma.alunosTurmas.length} alunos.
                                                 </Card.Text>
                                                 <div style={{display: "flex", justifyContent: "space-around"}}>
-                                                    <Button variant="link">Ver +</Button>
+                                                    <Button variant="link" value={turma.value} href={`/turma/detalhes/${turma.id}`}>Ver +</Button>
                                                 </div>
                                             </Card.Body>
                                         </Card>
@@ -303,7 +304,7 @@ const Turmas = () => {
                                 <Form onSubmit={event => cadastrar(event)}>
                                     <Form.Group>
                                         <h2 style={{lineHeight: "300%", textAlign: "center"}}>Configurações gerais da turma</h2>
-                                        <Form.Control as="textarea" rows={3} placeholder="Descrição" value={descricao} onChange={event=>setDescricao(event.target.value)}/>
+                                        <Form.Control as="textarea" rows={3} placeholder="Nome" value={descricao} onChange={event=>setDescricao(event.target.value)}/>
                                         <Form.Control as="select" value={idCurso} onChange={event => setIdCurso(event.target.value)}>
                                             <option value={0} selected>Curso</option>
                                             {
