@@ -54,7 +54,7 @@ const RotaPrivadaInstituicao = ({component : Component, ...rest}) => (
 );
 
 const routing = (
-  <Router>
+  <Router basename={process.env.PUBLIC_URL}>
     <Switch>
       <Route exact path="/" component={Inicio}/> 
       <Route path="/login" component={Login}/>
